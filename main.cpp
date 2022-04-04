@@ -2,7 +2,7 @@
 #include <dpp/message.h>
 #include <sstream>
 
-const std::string BOT_TOKEN = "OTU5NjA4NjE1OTczNTY0NDg2.YkeXKg.QNldwVxn09sMMlGF8LSzXOVx76k";
+const std::string BOT_TOKEN = "";
 const dpp::snowflake SERVER_ID = 959613365678923794;
 const dpp::snowflake MOD_CHANNEL_ID = 960215514402127873;
 
