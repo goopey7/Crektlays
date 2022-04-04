@@ -1,14 +1,17 @@
 #include <dpp/dpp.h>
 #include <dpp/message.h>
+#include <dpp/nlohmann/json.hpp>
 #include <sstream>
-
-const std::string BOT_TOKEN = "";
-const dpp::snowflake SERVER_ID = 959613365678923794;
-const dpp::snowflake MOD_CHANNEL_ID = 960215514402127873;
 
 int main()
 {
-	dpp::cluster bot(BOT_TOKEN);
+	json config;
+	std::ifstream configFile("../config.json");
+
+	configFile >> config;
+	const dpp::snowflake MOD_CHANNEL_ID = config["modChannelID"];
+
+	dpp::cluster bot(config["token"]);
 
 	bot.on_log(dpp::utility::cout_logger());
 
