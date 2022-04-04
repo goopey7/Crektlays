@@ -15,6 +15,7 @@ int main()
 	bot.intents |= dpp::intents::i_message_content;
 
 	std::vector<dpp::message*> heldMessages;
+	std::map<dpp::message*,std::vector<std::pair<std::string,std::string>>> msgFiles;
 
 	// callback for whenever a message gets sent
 	bot.on_message_create(
@@ -41,13 +42,15 @@ int main()
 
 						// callback for when attachment is downloaded
 						bot.request(url, dpp::m_get, 
-						[&msg,&filename,&bWaitUp]
+						[&msg,&filename,&bWaitUp,&msgFiles]
 						(const dpp::http_request_completion_t& httpRequestCompletion)
 						{
 							if(httpRequestCompletion.status == 200)
 							{
 								// add attachment to bot message
 								msg->add_file(filename, httpRequestCompletion.body);
+								std::pair<std::string,std::string> file(filename,httpRequestCompletion.body);
+								msgFiles[msg].push_back(file);
 							}
 							// allow the loop to continue to the next attachment
 							bWaitUp=false;
@@ -99,6 +102,10 @@ int main()
 				{
 					dpp::snowflake channel = std::stoll(event.custom_id.substr(event.custom_id.find('|')+1));
 					dpp::message approvedMsg(channel,msg->content);
+					for(auto file : msgFiles[msg])
+					{
+						approvedMsg.add_file(file.first,file.second);
+					}
 					bot.message_create(approvedMsg);
 				}
 				
