@@ -99,6 +99,8 @@ int main()
 				int idx = std::stoi(event.custom_id.substr(1,event.custom_id.find('|')));
 				dpp::message* msg = heldMessages[idx];
 
+				bool bCleanupTime = false;
+
 				if(button=="approved")
 				{
 					dpp::snowflake channel = std::stoll(event.custom_id.substr(event.custom_id.find('|')+1));
@@ -107,12 +109,25 @@ int main()
 					{
 						approvedMsg.add_file(file.first,file.second);
 					}
-					bot.message_create(approvedMsg);
+					bot.message_create(approvedMsg,[&bCleanupTime](const dpp::confirmation_callback_t& c)
+							{
+								bCleanupTime = true;
+							}
+							);
 				}
-				
-				std::cout << '\n' << msg->id << '\n';
+				else bCleanupTime = true;
+
+				// wait until we have sent if approved
+				while(!bCleanupTime)
+				{}
+
+				// delete files
+				msgFiles[msg].clear();
+				msgFiles.erase(msg);
+
+				// delete held message
 				bot.message_delete(msg->id,MOD_CHANNEL_ID);
-				delete heldMessages[idx];
+				delete msg;
 				heldMessages.erase(heldMessages.begin() + idx);
 
 				dpp::message response(MOD_CHANNEL_ID,"message " + button);
