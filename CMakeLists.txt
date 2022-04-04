@@ -4,7 +4,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(BOT_NAME "templatebot")
 
 project(${BOT_NAME})
-aux_source_directory("src" coresrc)
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR} coresrc)
 add_executable(${BOT_NAME} ${coresrc})
 
 string(ASCII 27 Esc)
@@ -31,7 +31,7 @@ else()
 endif()
 
 target_include_directories(${BOT_NAME} PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${OPENSSL_INCLUDE_DIR}
 )
 
