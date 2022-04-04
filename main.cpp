@@ -26,7 +26,8 @@ int main()
 				{
 					// Stick author and message contents into bot's message
 					std::ostringstream contents;
-					contents << "``Author: ``" << event.msg.author.get_mention() << '\n'
+					contents << dpp::utility::timestamp(time(0),dpp::utility::time_format::tf_short_datetime) << '\n'
+					<< "``Author: ``" << event.msg.author.get_mention() << '\n'
 					<< "``Message Body:\n" << event.msg.content << "``\n";
 
 					dpp::message* msg = new dpp::message(MOD_CHANNEL_ID,contents.str());
