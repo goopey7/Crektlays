@@ -29,7 +29,6 @@ int main()
 					<< "``Message Body:\n" << event.msg.content << "``\n";
 
 					dpp::message* msg = new dpp::message(MOD_CHANNEL_ID,contents.str());
-					heldMessages.push_back(msg);
 
 					// loop through all attachments
 					for(int i=0;i<event.msg.attachments.size();i++)
@@ -65,23 +64,51 @@ int main()
 								set_type(dpp::cot_button).
 								set_emoji(u8"✔️").
 								set_style(dpp::cos_success).
-								set_id("approved")
+								set_id('a'+std::to_string(heldMessages.size())+'|'+std::to_string(event.msg.channel_id))
 								).
 								add_component(dpp::component().set_label("Deny").
 								set_type(dpp::cot_button).
 								set_emoji(u8"✖️").
 								set_style(dpp::cos_danger).
-								set_id("denied")));
+								set_id('d'+std::to_string(heldMessages.size()))));
 					bot.message_create(*msg);
+					delete msg;
 
 					// delete original message
 					bot.message_delete(event.msg.id,event.msg.channel_id);
+				}
+				// if the msg is from bot with attachments
+				else if(event.msg.attachments.size() != 0 && event.msg.author.is_bot())
+				{
+					// add message to vector
+					dpp::message* msg = new dpp::message();
+					*msg = event.msg;
+					heldMessages.push_back(msg);
 				}
 			}
 			);
 	
 	bot.on_button_click([&] (const dpp::button_click_t& event)
 			{
+				std::string button = (event.custom_id[0] == 'a') ? ("approved") : ("denied");
+
+				int idx = std::stoi(event.custom_id.substr(1,event.custom_id.find('|')));
+				dpp::message* msg = heldMessages[idx];
+
+				if(button=="approved")
+				{
+					dpp::snowflake channel = std::stoll(event.custom_id.substr(event.custom_id.find('|')+1));
+					dpp::message approvedMsg(channel,msg->content);
+					bot.message_create(approvedMsg);
+				}
+				
+				std::cout << '\n' << msg->id << '\n';
+				bot.message_delete(msg->id,MOD_CHANNEL_ID);
+				delete heldMessages[idx];
+				heldMessages.erase(heldMessages.begin() + idx);
+
+				dpp::message response(MOD_CHANNEL_ID,"message " + button);
+				event.reply("");
 			}
 			);
 
