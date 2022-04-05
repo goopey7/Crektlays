@@ -1,8 +1,10 @@
-# D++ CMake Template (templatebot)
+# Media/Attachment Moderation Bot
 
-CMake template for a simple [D++](https://dpp.dev) bot. This template assumes that D++ is already installed.
+This bot will censor any messages with attachments until approved by a mod
 
-## Compilation
+This repo assumes that you have D++ installed
+
+## Compilation 
 
     mkdir build
     cd build
@@ -13,23 +15,18 @@ If DPP is installed in a different location you can specify the root directory t
 
     cmake .. -DDPP_ROOT_DIR=<your-path>
 
-## Running the template bot
+## Configuring the bot
 
-Create a config.json in the directory above the build directory:
-
+Edit the default config.json file
 ```json
-{ "token": "your bot token here" }
+{
+	"token": "your bot token here"
+	"modChannelID":Media moderation channel ID here
+}
 ```
 
 Start the bot:
 
     cd build
-    ./templatebot
+    ./crektlays
 
-## Extending the bot
-
-You can add as many header files and .cpp files into the src and include folders as you wish. All .cpp files in the src directory will be linked together into the bot's executable.
-
-## Renaming the bot
-
-To rename the bot, search and replace "templatebot" in the `CMakeLists.txt` with your new bots name and then rename the templatebot folder in include. Rerun `cmake ..` from the `build` directory and rebuild.
