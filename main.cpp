@@ -31,7 +31,7 @@ int main()
 					std::ostringstream contents;
 					contents << dpp::utility::timestamp(time(0),dpp::utility::time_format::tf_short_datetime) << '\n'
 					<< "``Author: ``" << event.msg.author.get_mention() << '\n'
-					<< "``Message Body:\n" << event.msg.content << "``\n";
+					<< event.msg.content << "\n";
 
 					dpp::message* msg = new dpp::message(MOD_CHANNEL_ID,contents.str());
 
